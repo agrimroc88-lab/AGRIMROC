@@ -1097,4 +1097,46 @@
             let csv = 'Código,Requisito,Categoría,Fecha Límite,Estado,Evidencia\n';
             todosLosDatos.forEach(item => {
                 const tieneArchivo = item.ruta_archivo && item.ruta_archivo !== '';
-                csv += `${item.codigo},"${item.nombre}",${item.categoria || 'General'},${formatearFecha(item.fecha_limite)},${item.estado},${tieneArchivo ? item.nombre_archivo
+                csv += `${item.codigo},"${item.nombre}",${item.categoria || 'General'},${formatearFecha(item.fecha_limite)},${item.estado},${tieneArchivo ? item.nombre_archivo : 'Sin evidencia'}\n`;
+            });
+
+            // Descargar
+            const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = `reporte_sst_${new Date().toISOString().split('T')[0]}.csv`;
+            link.click();
+        }
+
+        // ============================================================
+        // 11. UTILIDADES
+        // ============================================================
+        function formatearFecha(fecha) {
+            if (!fecha) return '-';
+            const d = new Date(fecha);
+            return d.toLocaleDateString('es-ES', { day: '2-digit', month: 'short', year: 'numeric' });
+        }
+
+        // Cerrar modal con ESC
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') cerrarModal();
+        });
+
+        // Cerrar modal al hacer clic fuera
+        window.onclick = function(event) {
+            const modal = document.getElementById('modal');
+            if (event.target === modal) {
+                cerrarModal();
+            }
+        };
+
+        // ============================================================
+        // 12. INICIAR
+        // ============================================================
+        document.addEventListener('DOMContentLoaded', function() {
+            cargarDatos();
+        });
+    </script>
+
+</body>
+</html>
